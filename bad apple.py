@@ -9,32 +9,48 @@ import cv2
 from tqdm import tqdm
 import numpy as np
 
-# checks and such
-with open("assets/boxes.json") as f:
-    j = json.load(f)
-print(f"Most visible windows: {max(len(b) for b in j)}")
-print(f"Total frames: {len(j)}")
-print(f"Total window changes: {sum(len(b) for b in j)}")
-print(
-    f"Base width: {max(max((coords[0]+coords[2] for coords in b), default=0) for b in j)} Base height: {max(max((coords[1]+coords[3] for coords in b), default=0) for b in j)}"
-)
+print("Boxes conversion utility")
+print("Select an option:")
+print("(1) Convert video to boxes.json")
+print("(2) Convert boxes.json to boxes.bin")
+user_option = int(input("Option: "))
 
-print("Serialising box-o'-bytes to boxes.bin")
-with open("assets/boxes.bin", "wb") as f:
-    for frame in j:
-        for window in frame:
-            f.write(bytes(window))
-            # null window signifies new frame
-        f.write(bytes([0, 0, 0, 0]))
-exit()
+# invalid options
+if user_option > 2 or user_option < 1:
+    print("Invalid option")
+    exit()
+
+if user_option == 2:
+    # checks and such
+    with open("assets/boxes.json") as f:
+        j = json.load(f)
+    print(f"Most visible windows: {max(len(b) for b in j)}")
+    print(f"Total frames: {len(j)}")
+    print(f"Total window changes: {sum(len(b) for b in j)}")
+    print(
+        f"Base width: {max(max((coords[0]+coords[2] for coords in b), default=0) for b in j)} Base height: {max(max((coords[1]+coords[3] for coords in b), default=0) for b in j)}"
+    )
+
+    print("Serialising box-o'-bytes to boxes.bin")
+    with open("assets/boxes.bin", "wb") as f:
+        for frame in j:
+            for window in frame:
+                f.write(bytes(window))
+                # null window signifies new frame
+            f.write(bytes([0, 0, 0, 0]))
+    exit()
 
 # whole arrays printed, debug
 # np.set_printoptions(threshold=np.inf)
 
-inp = "【東方】Bad Apple!! ＰＶ【影絵】 [FtutLA63Cp8].webm"
+inp = input("Input video: ")
 out = "apple_frames"
 max_width = 64
 threshold = 255 * 0.4
+
+if not os.path.isdir(out):
+    print("Cannot find output folder, creating one...")
+    os.makedirs(out)
 
 
 def frame_to_boxes(im: Image, name):
@@ -174,7 +190,7 @@ try:
 
     cap.release()
 finally:
-    with open("boxes.json", "w") as f:
+    with open("assets/boxes.json", "w") as f:
         json.dump(all_boxes, f)
 
 # im = Image.open('bad apple.jpg')
