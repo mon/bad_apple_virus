@@ -1,4 +1,7 @@
 {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "master"
+    ]
 }

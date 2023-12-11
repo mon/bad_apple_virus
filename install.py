@@ -1,25 +1,30 @@
 import os
-from urllib.request import urlretrieve
-import subprocess
+import shutil
 
 print("Welcome to Bad_Apple_Virus Installer.")
-print("Please verify that Rust and Cargo are installed.")
-print("Are rust and cargo installed ? (Y, N) : ")
-install = input()
 
-if (install=="N"):
-    print("Install Rust then launch this script again.")
-    exit()
+isCargoInstalled = shutil.which("cargo")
+
+if (isCargoInstalled != ""):
+    print("============================================")
+    print("= Cargo and Rust are Installed... Skipping =")
+    print("============================================")
 else:
-    print("Building Bad Apple!!")
-    os.system("cargo build --release")
+    print("===================================================================")
+    print("= Cargo and Rust are not installed... Starting the Rust installer =.")
+    print("===================================================================")
+    os.system(".\\assets\\dependencies\\rustup-init.exe")
+
+
+print("Building Bad Apple!!")
+os.system("cargo build --release")
 print("===========================<>=========================")
 print("Bad apple installed ! Check the target/release folder !")
 print("Do you want to launch Bad Apple ? (Y, N)")
 
 run = input()
 
-if (run=="N"):
+if (run=="N" or run == "n"):
     exit()
 else:
     print("Launching Bad Apple!!")
