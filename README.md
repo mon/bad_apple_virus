@@ -55,3 +55,6 @@ Should be fine to just `cargo build --release`.
 Look at `bad apple.py` for the pre-processing to take an input video and turn it
 into `boxes.bin`, a space-optimized representation of the window bounds for each
 frame. The script is jank, don't come complaining.
+
+## Credits
+This software and all the rust code were built by Mon and it's installer and GUI parts were created by Théodore ROY (alias Equalisys)
