@@ -13,7 +13,7 @@ if (install=="N"):
 else:
     print("Building Bad Apple!!")
     os.system("cargo build --release")
-
+print("===========================<>=========================")
 print("Bad apple installed ! Check the target/release folder !")
 print("Do you want to launch Bad Apple ? (Y, N)")
 
