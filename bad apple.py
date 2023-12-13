@@ -8,12 +8,24 @@ from PIL import Image, ImageDraw
 import cv2
 from tqdm import tqdm
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser(
+    prog="Boxes utility")
+
+parser.add_argument('-i', '--input', action='store')
+args = parser.parse_args()
+
+user_option = 0
 
 print("Boxes conversion utility")
-print("Select an option:")
-print("(1) Convert video to boxes.json")
-print("(2) Convert boxes.json to boxes.bin")
-user_option = int(input("Option: "))
+if not args.input:
+    print("Select an option:")
+    print("(1) Convert video to boxes.json")
+    print("(2) Convert boxes.json to boxes.bin")
+    user_option = int(input("Option: "))
+else:
+    user_option = 1
 
 # invalid options
 if user_option > 2 or user_option < 1:
@@ -43,7 +55,8 @@ if user_option == 2:
 # whole arrays printed, debug
 # np.set_printoptions(threshold=np.inf)
 
-inp = input("Input video: ")
+# try to use the arg inputs, otherwise fallback to user input
+inp = args.input or input("Input video: ")
 out = "apple_frames"
 max_width = 64
 threshold = 255 * 0.4
