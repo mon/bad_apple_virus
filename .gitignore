@@ -1,3 +1,4 @@
 /target
 assets/boxes.json
 .cargo/config
+/output_frames

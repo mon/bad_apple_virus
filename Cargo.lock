@@ -52,18 +52,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
-name = "bad_apple"
-version = "0.1.0"
-dependencies = [
- "include-bytes-zstd",
- "kira",
- "lazy_static",
- "windows 0.42.0",
- "windows-sys",
- "winres",
-]
-
-[[package]]
 name = "bindgen"
 version = "0.64.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -886,6 +874,18 @@ name = "unicode-ident"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "301abaae475aa91687eb82514b328ab47a211a533026cb25fc3e519b86adfc3c"
+
+[[package]]
+name = "virus"
+version = "0.1.0"
+dependencies = [
+ "include-bytes-zstd",
+ "kira",
+ "lazy_static",
+ "windows 0.42.0",
+ "windows-sys",
+ "winres",
+]
 
 [[package]]
 name = "walkdir"

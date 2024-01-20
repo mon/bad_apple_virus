@@ -8,6 +8,21 @@ from PIL import Image, ImageDraw
 import cv2
 from tqdm import tqdm
 import numpy as np
+import argparse
+
+
+
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Process a video and extract significant regions from each frame.")
+    parser.add_argument("--input_video", type=str, required=True, help="Path to the input video file.")
+    parser.add_argument("--output_dir", type=str, default="output_frames", help="Directory to save the output images.")
+    parser.add_argument("--max_width", type=int, default=64, help="Maximum width for processed frames.")
+    parser.add_argument("--threshold", type=float, default=0.4, help="Threshold for binarization (as a fraction of 255).")
+    parser.add_argument("--boxes_file", type=str, default="boxes.json", help="Path to save the boxes data.")
+    return parser.parse_args()
+
 
 # checks and such
 with open("assets/boxes.json") as f:
@@ -31,8 +46,8 @@ exit()
 # whole arrays printed, debug
 # np.set_printoptions(threshold=np.inf)
 
-inp = "【東方】Bad Apple!! ＰＶ【影絵】 [FtutLA63Cp8].webm"
-out = "apple_frames"
+inp = "output.webm"
+out = "astley_frames"
 max_width = 64
 threshold = 255 * 0.4
 
