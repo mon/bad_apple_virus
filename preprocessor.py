@@ -7,6 +7,7 @@ import cv2
 from tqdm import tqdm
 import numpy as np
 import argparse
+from multiprocessing import Pool, cpu_count
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Process a video and extract significant regions from each frame.")
@@ -21,6 +22,10 @@ def parse_args():
 def load_json(file_path):
     with open(file_path) as f:
         return json.load(f)
+
+
+
+
 
 def write_binary_data(file_path, data):
     with open(file_path, "wb") as f:
@@ -47,6 +52,8 @@ def process_image(image: Image, max_width: int, threshold: float, algorithm: str
     else:
         print("Invalid algorithm, using brute force")
         boxes = find_largest_region_bruteforce(image)
+        
+
     return boxes
 
 
@@ -135,24 +142,32 @@ def process_video(input_video: str, max_width: int, threshold: float, algorithm:
     cap = cv2.VideoCapture(input_video)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     prog = tqdm(total=total_frames)
+    frames = []
+
+    # Load all frames first
+    while cap.isOpened():
+        ret, cv2_im = cap.read()
+        if ret:
+            frames.append(cv2_im)
+        else:
+            break
+    cap.release()
+
+    # Process frames in parallel using multiprocessing
     all_boxes = []
+    with Pool(cpu_count()) as pool:
+        for boxes in tqdm(pool.imap_unordered(process_frame, [(frame, max_width, threshold, algorithm) for frame in frames]), total=len(frames)):
+            all_boxes.append(boxes)
+            prog.update()
 
-
-    try:
-        while cap.isOpened():
-            ret, cv2_im = cap.read()
-            if ret:
-                converted = cv2.cvtColor(cv2_im, cv2.COLOR_BGR2RGB)
-                pil_im = Image.fromarray(converted)
-                boxes = process_image(pil_im, max_width, threshold, algorithm)
-                all_boxes.append(boxes)
-
-                prog.update()
-            else:
-                break
-    finally:
-        cap.release()
-        return all_boxes
+    return all_boxes
+    
+    
+def process_frame(args):
+    frame, max_width, threshold, algorithm = args
+    converted = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    pil_im = Image.fromarray(converted)
+    return process_image(pil_im, max_width, threshold, algorithm)
 
 def save_boxes_json(file_path, data):
     with open(file_path, "w") as f:
@@ -168,6 +183,7 @@ def main():
     # Process video and save boxes
     all_boxes = process_video(args.input_video, args.max_width, args.threshold * 255, args.algorithm)
     save_boxes_json(args.boxes_file, all_boxes)
+    write_binary_data("boxes.bin", all_boxes)
 
 if __name__ == "__main__":
     main()

@@ -2,3 +2,5 @@
 assets/boxes.json
 .cargo/config
 /output_frames
+assets/desktop.ini
+test.png
