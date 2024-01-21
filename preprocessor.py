@@ -11,10 +11,11 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description="Process a video and extract significant regions from each frame.")
     parser.add_argument("--input_video", type=str, default="input.webm", help="Path to the input video file.")
-    parser.add_argument("--output_dir", type=str, default="output_frames", help="Directory to save the output images.")
+    #parser.add_argument("--output_dir", type=str, default="output_frames", help="Directory to save the output images.")
     parser.add_argument("--max_width", type=int, default=64, help="Maximum width for processed frames.")
     parser.add_argument("--threshold", type=float, default=0.4, help="Threshold for binarization (as a fraction of 255).")
     parser.add_argument("--boxes_file", type=str, default="boxes.json", help="Path to save the boxes data.")
+    parser.add_argument("--algorithm", type=str, default="bruteforce", help="Algorithm to use for finding boxes.")
     return parser.parse_args()
 
 def load_json(file_path):
@@ -28,7 +29,8 @@ def write_binary_data(file_path, data):
                 f.write(bytes(window))
             f.write(bytes([0, 0, 0, 0]))
 
-def process_image(image: Image, max_width: int, threshold: float, output_dir: str, image_counter: int) -> list:
+def process_image(image: Image, max_width: int, threshold: float, algorithm: str) -> list:
+    '''Process an image and return a list of boxes.'''
     w, h = image.size
     ratio = w / h
 
@@ -40,7 +42,16 @@ def process_image(image: Image, max_width: int, threshold: float, output_dir: st
     image = image.point(lambda p: 255 if p > threshold else 0)
     # mono
     image = image.convert("1")
+    if algorithm.lower().startswith("brute"):
+        boxes = find_largest_region_bruteforce(image)
+    else:
+        print("Invalid algorithm, using brute force")
+        boxes = find_largest_region_bruteforce(image)
+    return boxes
 
+
+def find_largest_region_bruteforce(image: Image) -> tuple[int, int, int, int]:
+    
     # find largest region via brute force
     # tqdm.write(f'{image.width=} {image.height=}')
     pixels = image.load()
@@ -48,27 +59,6 @@ def process_image(image: Image, max_width: int, threshold: float, output_dir: st
 
     # visualisation
     boxes = []
-    work = image.copy().convert("RGB")
-    draw = ImageDraw.Draw(work)
-    fills = cycle(
-        [
-            "red",
-            "green",
-            "blue",
-            "orange",
-            "yellow",
-            "purple",
-            "pink",
-            "cyan",
-            "gray",
-            "brown",
-            "maroon",
-            "hotpink",
-            "gold",
-            "chocolate",
-            "green",
-        ]
-    )
 
     while False in visited:
         largest: Optional[tuple[int, int, int, int]] = None  # x, y, width, height
@@ -127,8 +117,7 @@ def process_image(image: Image, max_width: int, threshold: float, output_dir: st
             (largest[0], largest[1]),
             (largest[0] + largest[2] - 1, largest[1] + largest[3] - 1),
         ]
-        draw.rectangle(box, fill=next(fills))
-
+        
         # work.show() # debug
         # exit()
 
@@ -136,19 +125,18 @@ def process_image(image: Image, max_width: int, threshold: float, output_dir: st
 
     tqdm.write(f"{len(boxes)=}")
 
-    # image.show()
-    # work.show()
+    #image.show()
+    #work.show()
 
-    work.save(os.path.join(output_dir, f"{image_counter}.png"))
 
     return boxes
 
-def process_video(input_video: str, max_width: int, threshold: float, output_dir: str):
+def process_video(input_video: str, max_width: int, threshold: float, algorithm: str):
     cap = cv2.VideoCapture(input_video)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     prog = tqdm(total=total_frames)
     all_boxes = []
-    image_counter = 0
+
 
     try:
         while cap.isOpened():
@@ -156,9 +144,9 @@ def process_video(input_video: str, max_width: int, threshold: float, output_dir
             if ret:
                 converted = cv2.cvtColor(cv2_im, cv2.COLOR_BGR2RGB)
                 pil_im = Image.fromarray(converted)
-                boxes = process_image(pil_im, max_width, threshold, output_dir, image_counter)
+                boxes = process_image(pil_im, max_width, threshold, algorithm)
                 all_boxes.append(boxes)
-                image_counter += 1
+
                 prog.update()
             else:
                 break
@@ -174,11 +162,11 @@ def main():
     args = parse_args()
 
     # Load and process JSON data
-    json_data = load_json("assets/boxes.json")
+    #json_data = load_json("assets/boxes.json")
     # Perform analysis and print statements using json_data
 
     # Process video and save boxes
-    all_boxes = process_video(args.input_video, args.max_width, args.threshold * 255, args.output_dir)
+    all_boxes = process_video(args.input_video, args.max_width, args.threshold * 255, args.algorithm)
     save_boxes_json(args.boxes_file, all_boxes)
 
 if __name__ == "__main__":
