@@ -1,13 +1,13 @@
-mod commandline_gui_helpers;
-mod util;
+pub mod commandline_gui_helpers;
+pub mod util;
 
-use windows::Win32::Graphics::Gdi::CreateSolidBrush;
-use windows::{
+use crate::*;
+use ::windows::Win32::Graphics::Gdi::CreateSolidBrush;
+use ::windows::{
     core::*,
     Win32::{Foundation::*, UI::WindowsAndMessaging::*},
 };
-
-const WND_CLASS: &str = "BadApple\0";
+use std::time::Instant;
 
 pub unsafe extern "system" fn wnd_proc(
     hwnd: HWND,

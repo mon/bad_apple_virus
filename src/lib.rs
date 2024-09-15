@@ -11,6 +11,9 @@ pub mod macos;
 #[cfg(target_os = "windows")]
 pub mod windows;
 
+#[cfg(target_os = "windows")]
+const WND_CLASS: &str = "BadApple\0";
+
 // get this from `bad apple.py`
 const MAX_WINDOWS: usize = 155;
 const BASE_WIDTH: u8 = 64;
@@ -48,7 +51,7 @@ pub fn initialize_audio() -> (u64, ClockHandle, AudioManager<DefaultBackend>) {
 
 pub struct DeferredWindow {
     #[cfg(target_os = "windows")]
-    hwnd: HWND,
+    hwnd: ::windows::Win32::Foundation::HWND,
     #[cfg(target_os = "macos")]
     hnd: cacao::appkit::window::Window,
     x: i32,
@@ -69,7 +72,13 @@ impl Default for DeferredWindow {
 
 impl DeferredWindow {
     #[cfg(target_os = "windows")]
-    pub fn new_from_hwnd(hwnd: HWND, x: i32, y: i32, w: i32, h: i32) -> Self {
+    pub fn new_from_hwnd(
+        hwnd: ::windows::Win32::Foundation::HWND,
+        x: i32,
+        y: i32,
+        w: i32,
+        h: i32,
+    ) -> Self {
         Self {
             hwnd,
             x,
@@ -116,10 +125,7 @@ impl DeferredWindow {
 
     #[cfg(target_os = "windows")]
     pub fn new() -> Self {
-        use ::windows::{
-            core::*,
-            Win32::{Foundation::*, UI::WindowsAndMessaging::*},
-        };
+        use ::windows::{core::*, Win32::UI::WindowsAndMessaging::*};
         let w = 200;
         let h = 100;
         let x = 10;
@@ -200,10 +206,7 @@ impl DeferredWindow {
 
     #[cfg(target_os = "windows")]
     pub fn draw(&mut self, hwinposinfo: isize) -> isize {
-        use ::windows::{
-            core::*,
-            Win32::{Foundation::*, UI::WindowsAndMessaging::*},
-        };
+        use ::windows::Win32::UI::WindowsAndMessaging::*;
         // SWP_NOACTIVATE: all windows stay grey
         // no SWP_NOACTIVATE: most recent window touched bounces around. Looks kinda cool.
         let mut flags = SWP_NOZORDER /*| SWP_NOACTIVATE*/;
@@ -281,10 +284,7 @@ impl WindowCollection {
 
     #[cfg(target_os = "windows")]
     pub fn draw(&mut self) {
-        use ::windows::{
-            core::*,
-            Win32::{Foundation::*, UI::WindowsAndMessaging::*},
-        };
+        use ::windows::Win32::UI::WindowsAndMessaging::*;
         let changed = self.changed() as i32;
         if changed == 0 {
             return;

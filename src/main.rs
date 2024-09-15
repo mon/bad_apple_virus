@@ -1,11 +1,11 @@
-#![cfg_attr(target_os = "windows", windows_subsytem = "windows")]
+#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 
 use bad_apple::*;
 
 fn main() {
     #[cfg(target_os = "windows")]
     {
-        use windows::*;
+        use bad_apple::windows::*;
         commandline_gui_helpers::init();
 
         register_window_class();
@@ -19,11 +19,13 @@ fn main() {
             frames_raw.len() / std::mem::size_of::<WinCoords>(),
         )
     };
-    let frames = frames.to_vec();
 
     #[cfg(target_os = "macos")]
-    cacao::appkit::App::new("com.bad.apple", macos::BadApple::generate_windows(frames)).run();
+    {
+        let frames = frames.to_vec();
+        cacao::appkit::App::new("com.bad.apple", macos::BadApple::generate_windows(frames)).run();
+    }
 
     #[cfg(target_os = "windows")]
-    windows::main();
+    windows::main(frames);
 }
