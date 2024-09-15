@@ -116,7 +116,7 @@ impl DeferredWindow {
 
     #[cfg(target_os = "windows")]
     pub fn new() -> Self {
-        use windows::{
+        use ::windows::{
             core::*,
             Win32::{Foundation::*, UI::WindowsAndMessaging::*},
         };
@@ -200,7 +200,7 @@ impl DeferredWindow {
 
     #[cfg(target_os = "windows")]
     pub fn draw(&mut self, hwinposinfo: isize) -> isize {
-        use windows::{
+        use ::windows::{
             core::*,
             Win32::{Foundation::*, UI::WindowsAndMessaging::*},
         };
@@ -281,7 +281,7 @@ impl WindowCollection {
 
     #[cfg(target_os = "windows")]
     pub fn draw(&mut self) {
-        use windows::{
+        use ::windows::{
             core::*,
             Win32::{Foundation::*, UI::WindowsAndMessaging::*},
         };
