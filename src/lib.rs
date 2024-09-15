@@ -116,6 +116,10 @@ impl DeferredWindow {
 
     #[cfg(target_os = "windows")]
     pub fn new() -> Self {
+        use windows::{
+            core::*,
+            Win32::{Foundation::*, UI::WindowsAndMessaging::*},
+        };
         let w = 200;
         let h = 100;
         let x = 10;
@@ -196,6 +200,10 @@ impl DeferredWindow {
 
     #[cfg(target_os = "windows")]
     pub fn draw(&mut self, hwinposinfo: isize) -> isize {
+        use windows::{
+            core::*,
+            Win32::{Foundation::*, UI::WindowsAndMessaging::*},
+        };
         // SWP_NOACTIVATE: all windows stay grey
         // no SWP_NOACTIVATE: most recent window touched bounces around. Looks kinda cool.
         let mut flags = SWP_NOZORDER /*| SWP_NOACTIVATE*/;
@@ -273,6 +281,10 @@ impl WindowCollection {
 
     #[cfg(target_os = "windows")]
     pub fn draw(&mut self) {
+        use windows::{
+            core::*,
+            Win32::{Foundation::*, UI::WindowsAndMessaging::*},
+        };
         let changed = self.changed() as i32;
         if changed == 0 {
             return;
