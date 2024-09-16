@@ -196,7 +196,7 @@ impl DeferredWindow {
         self.pos_stale = false;
         self.sz_stale = false;
 
-        self.hnd.set_scale(cacao::geometry::Rect::new(
+        self.hnd.set_frame(cacao::geometry::Rect::new(
             self.y as f64,
             self.x as f64,
             self.w as f64,
