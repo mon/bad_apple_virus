@@ -4,7 +4,7 @@ use std::{
 };
 
 use cacao::{
-    appkit::{App, AppDelegate},
+    appkit::{App, AppDelegate, ApplicationActivationOptions},
     geometry::Rect,
     notification_center::Dispatcher,
 };
@@ -117,6 +117,7 @@ impl AppDelegate for BadApple {
             let frame_duration = Duration::from_millis(33);
 
             'outer: loop {
+                App::activate(ApplicationActivationOptions::ActivateIgnoringOtherApps);
                 let start_time = Instant::now();
                 let current_tick = clock.time().ticks;
                 if next_tick > current_tick {

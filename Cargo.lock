@@ -144,8 +144,9 @@ checksum = "428d9aa8fbc0670b7b8d6030a7fadd0f86151cae55e4dbbece15f3780a3dfaf3"
 [[package]]
 name = "cacao"
 version = "0.4.0-beta2"
-source = "git+https://github.com/ImTheSquid/cacao.git#df5709986d3a7766ba32230a8dc9dde524a28a63"
+source = "git+https://github.com/ImTheSquid/cacao.git#60cd402813da44c9736c90dd7263f84930603b39"
 dependencies = [
+ "bitflags 2.6.0",
  "bitmask-enum",
  "block2",
  "core-foundation",
