@@ -30,7 +30,6 @@ exit()
 
 # whole arrays printed, debug
 # np.set_printoptions(threshold=np.inf)
-
 inp = "【東方】Bad Apple!! ＰＶ【影絵】 [FtutLA63Cp8].webm"
 out = "apple_frames"
 max_width = 64
