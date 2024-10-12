@@ -55,3 +55,10 @@ Should be fine to just `cargo build --release`.
 Look at `bad apple.py` for the pre-processing to take an input video and turn it
 into `boxes.bin`, a space-optimized representation of the window bounds for each
 frame. The script is jank, don't come complaining.
+
+Check the PRs for some forks that improve the python script to be easier to run.
+
+## Why's the repo archived?
+
+I simply don't have the bandwidth to respond to questions and merge PRs for this little
+project I threw out into the world. Feel free to fork it and make it do cool things!
