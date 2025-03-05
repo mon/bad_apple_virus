@@ -6,11 +6,19 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-include-bytes-zstd = "0.1.0"
-kira = { version = "0.8.4", default-features = false, features = ["cpal", "ogg"] }
-lazy_static = "1.4.0"
+kira = { version = "0.8.4", default-features = false, features = [
+    "cpal",
+    "ogg",
+] }
 
-[dependencies.windows]
+[target.'cfg(target_os = "macos")'.dependencies]
+cacao = { git = "https://github.com/ImTheSquid/cacao.git" }
+objc = "0.2.7"
+
+[target.'cfg(target_os = "windows")'.dependencies.lazy_static]
+version = "1.4.0"
+
+[target.'cfg(target_os = "windows")'.dependencies.windows]
 version = "0.42.0"
 features = [
     # core
@@ -32,7 +40,7 @@ features = [
 ]
 
 # used for hooking functions with more ease
-[dependencies.windows-sys]
+[target.'cfg(target_os = "windows")'.dependencies.windows-sys]
 version = "0.42.0"
 features = [
     # core
@@ -41,7 +49,7 @@ features = [
     "Win32_UI_WindowsAndMessaging",
 ]
 
-[target.'cfg(windows)'.build-dependencies]
+[target.'cfg(target_os = "windows")'.build-dependencies]
 winres = "0.1.12"
 
 [package.metadata.winres]

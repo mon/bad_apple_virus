@@ -1,7 +1,7 @@
-# Bad Apple but it's a Windows virus
+# Bad Apple but it's a Windows and macOS virus
 
 A high-performance (I've never seen _anything_ like this run in realtime before)
-rendition of Bad Apple, using Windows windows as the video surface.
+rendition of Bad Apple, using Windows or macOS windows as the video surface.
 
 It's not _actually_ a virus, but it is reminiscent of the viruses of old that
 were more of a nuisance than anything.
@@ -16,6 +16,7 @@ Video demonstration:
   by using this wonderful batched API instead of `SetWindowPos`.
 - `WS_EX_TOOLWINDOW` to remove the taskbar entry
 - `SWP_NOREDRAW` when moving/resizing windows
+- `NSAnimationContext` grouping on macOS
 - Optimised code that only shows/hides/moves windows that need
   showing/hiding/moving
 - Rust is *blazing fast*, don't you know?
